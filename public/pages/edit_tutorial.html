@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- Site Properties -->
+  <title>脸猪官网管理后台</title>
+
+  <link href="/css/semantic.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/editor.js"></script>
+
+</head>
+<body>
+
+    <div id="header_nav"></div>
+
+    <div class="ui main container">
+        <div class="ui segment">
+            <div class="ui mini form">
+                <div class="two fields">
+                    <div class="field">
+                        <label>文章标题</label>
+                        <input  id="name">
+                    </div>
+                    <div class="field">
+                        <label>文章类型</label>
+                        <select id="type" class="ui dropdown" style="height:32px;">
+                            <option value="1">使用教程</option>
+                            <option value="2">干货分享</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>文章编辑</label>
+                    <div id="editor">
+                        <p>快来发表最新的脸猪使用教程和干货分享吧~~</p>
+                    </div>
+                </div>
+                <div class="field">
+                    <button id="btn_submit" class="ui mini facebook button" onclick="save()">
+                        <i class="save icon"></i>
+                        新建
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+</body>
+
+<script>
+    $.get("/pages/header.html", function (data) {
+        $("#header_nav").append(data);
+    });
+
+    $.get("/pages/foot.html", function (data) {
+        $("body").append(data);
+    });
+</script>
+
+
+<script>
+    var editMode = false, editItem = null;
+
+    function getQueryString(name)
+    {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+
+    $(document).ready(function(){
+        var id = getQueryString('id');
+        if(isNaN(id)) return;
+        if(id !== '0'){
+            $.ajax({
+            url: '/tutorial_query_one/'+id,
+            type: 'GET',
+            dataType: 'json',
+            success:function(data){
+                if(data && data.code === 0 && data.result){
+                    var item = data.result[0];
+                    editItem = item;
+                    editMode = true;
+                    $('#name').val(item.name);
+                    $('#type').val(item.type);
+                    $('#btn_submit').text('更新');
+                    editor.txt.html(item.content);
+                }
+            },
+            error:function(data){
+                alert(data.msg);
+            }
+           });
+        }
+    });
+
+</script>
+
+<script type="text/javascript">
+    var E = window.wangEditor;
+    var editor = new E('#editor');
+    editor.create();
+</script>
+
+
+<script type="text/javascript">
+    function  formData(){
+        return {
+            name: $('#name').val(),
+            type: $('#type').val(),
+            content: editor.txt.html()
+        }
+    }
+
+    function save(){
+        if(!$('#name').val() || !$('#type').val() || !editor.txt.html()){
+            return alert('请填写完整');
+        }
+        var url = editMode ? '/tutorial_update' : '/tutorial_add';
+        var data = formData();
+        if(editMode) data.id = editItem.id;
+
+        $.ajax({
+        url: url,
+        type: 'POST',
+        data: data,
+        dataType: 'json',
+        success:function(data){
+            alert('保存成功')
+        },
+        error:function(data){
+            alert(data.msg);
+        }
+      });
+    }
+
+</script>
+
+
+</html>

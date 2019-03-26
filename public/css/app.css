@@ -1,0 +1,14 @@
+body {
+    background-color: #FFFFFF;
+  }
+  .ui.menu .item img.logo {
+    margin-right: 1.5em;
+  }
+  .main.container {
+    padding-top: 50px;
+    min-height: calc(100vh - 118px);
+    margin-bottom: 20px;
+  }
+  .wireframe {
+    margin-top: 2em;
+  }

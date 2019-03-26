@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+</head>
+<body>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>名称</th>
+        <th>类型</th>
+        <th>内容</th>
+    </tr>
+    <% for(var i = 0; i < datas.length; i++) {%>
+        <tr>
+            <td><%= datas[i].id %></td>
+            <td><%= datas[i].name %></td>
+            <td><%= datas[i].type %></td>
+            <td><%= datas[i].content %></td>
+        </tr>
+    <% } %>
+</table>
+</body>
+</html>
