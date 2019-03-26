@@ -35,6 +35,7 @@
                   <th>阅读次数</th>
                   <th>创建人</th>
                   <th>创建时间</th>
+                  <th>操作</th>
                 </tr>
              </thead>
              <tbody id="data_tbbody">
@@ -54,24 +55,58 @@
         $("body").append(data);
     });
 
-    $.ajax({
-        url: '/tutorial_list',
+    function init(){
+        $.ajax({
+            url: '/tutorial_list',
+            type: 'GET',
+            dataType: 'json',
+            success:function(data){
+                var html = ``;
+                if(data && data.code === 0){
+                    var list = data.result;
+                    list.forEach(function(item) {
+                        html += `<tr>
+                            <td> <a href='/edit_tutorial?id=${item.id}'>${item.id}</a></td> 
+                            <td>${item.type === 1 ? '使用教程' : '干货分享'}</td> 
+                            <td>${item.name}</td> <td>${item.read_count}</td> 
+                            <td>${item.created_by}</td> <td>${item.created_time}</td>
+                            <td>
+                                <a class="mini teal ui button" href="/edit_tutorial?id=${item.id}">编辑</a>
+                                <button class="mini red ui button" onclick="del(${item.id})">删除</button></td>
+                            </tr>`;
+                    });
+                }
+                $('#data_tbbody').html(html);
+            },
+            error:function(data){
+                alert(data.msg);
+            }
+        });
+    }
+    
+    function del(id){
+        if(!confirm('确定删除?')) return;
+
+        if(isNaN(id)) return;
+
+        $.ajax({
+        url: `/tutorial_delete/${id}`,
         type: 'GET',
         dataType: 'json',
         success:function(data){
-            var html = ``;
-            if(data && data.code === 0){
-                var list = data.result;
-                list.forEach(function(item) {
-                    html += `<tr><td> <a href='/edit_tutorial?id=${item.id}'>${item.id}</a></td> <td>${item.type === 1 ? '使用教程' : '干货分享'}</td> <td>${item.name}</td> <td>${item.read_count}</td> <td>${item.created_by}</td> <td>${item.created_time}</td>`;
-                });
-            }
-            $('#data_tbbody').html(html);
+            if(data.result === 1 ) alert('删除成功');
+            else alert(data.msg);
         },
         error:function(data){
             alert(data.msg);
+        },
+        complete:function(){
+            init();
         }
-    });
+      });
+    }
+
+    init();
   
 </script>
 

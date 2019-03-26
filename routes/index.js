@@ -52,6 +52,17 @@ router.post('/tutorial_add', function(req, res, next){
     });
 })
 
+router.get('/tutorial_delete/:id', function(req, res, next){
+  var id = req.params.id;
+  db.query("delete  from fp_tutorial where id =" +id ,function(err,rows){
+    if(err){
+        res.send({code: 500, msg:' 服务器暂不可用!'});
+    }else {
+        res.send({code: 0, result: 1});
+    }
+  });
+})
+
 router.post('/tutorial_update', function(req, res, next){
   var name = req.body.name;
   var type =  req.body.type;
