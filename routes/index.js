@@ -43,7 +43,7 @@ router.post('/tutorial_add', function(req, res, next){
     var name = req.body.name;
     var type =  req.body.type;
     var content =  req.body.content;
-    db.query("insert into fp_tutorial(name,type,content,created_by, created_time, read_count) values('"+name+"','"+ type +"','"+ content +"','admin', now(), 100)",function(err,rows){
+    db.query("insert into fp_tutorial(name,type,content,created_by, created_time, read_count) values('"+name+"','"+ type +"','"+ content +"','小猪', now(), 100)",function(err,rows){
         if(err){
             res.send({code: 500, msg:'新建失败'});
         }else {
